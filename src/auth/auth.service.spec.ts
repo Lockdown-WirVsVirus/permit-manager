@@ -1,9 +1,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { JwtService } from '@nestjs/jwt';
 import { AuthService } from './auth.service';
 import { User, UsersService } from '../users/users.service';
 
 describe('AuthService', () => {
   let service: AuthService;
+  const jwtService: JwtService = new JwtService({});
+
+  // mock jwt
+  jest.spyOn(jwtService, 'sign').mockReturnValue('123.abc.xyz');
 
   let mockUsersService = {
     findOne: (username): Promise<User> => {
@@ -19,6 +24,7 @@ describe('AuthService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AuthService,
+        { provide: JwtService, useValue: jwtService },
         { provide: UsersService, useValue: mockUsersService}
       ],
     }).compile();
