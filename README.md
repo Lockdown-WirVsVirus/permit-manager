@@ -1,6 +1,6 @@
 <p align="center">
   <a href="http://safeticketapp.de/" target="blank">
-    <img src="https://nestjs.com/img/logo_text.svg" width="320" alt="SafeTicket Logo" />
+    <img src="https://sticket.uber.space/wp-content/uploads/2020/04/logo-safeticket-black.png" width="33%" alt="SafeTicket Logo" />
   </a>
 </p>
 
