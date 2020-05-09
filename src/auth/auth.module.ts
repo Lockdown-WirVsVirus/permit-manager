@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, Global } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UsersModule } from 'src/users/users.module';
 import { PassportModule } from '@nestjs/passport';
@@ -6,6 +6,7 @@ import { LocalStrategy } from './local.strategy';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthController } from './controllers/auth.controller';
 
+@Global()
 @Module({
     imports: [
         // loading JwtModule async to have access to process.env via ConfigService
@@ -24,5 +25,9 @@ import { AuthController } from './controllers/auth.controller';
         AuthService,
         LocalStrategy
     ],
+    exports: [
+        AuthService,
+        JwtModule,
+    ]
 })
 export class AuthModule {}
