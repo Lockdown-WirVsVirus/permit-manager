@@ -1,10 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import * as jsonfile from 'jsonfile';
+import { UserRoles } from './roles';
 
 export interface User {
     userId: string;
     username: string;
     hashedPassword: string;
+    roles: UserRoles;
 }
 
 @Injectable()

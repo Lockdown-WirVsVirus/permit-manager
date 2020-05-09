@@ -30,8 +30,9 @@ export class AuthService {
         return null;
     }
 
-    async generateToken(): Promise<IJwtResponse> {
+    async generateToken(roles: string[]): Promise<IJwtResponse> {
         const jwtPayload: IJwtTokenPayload = {
+            roles,
         };
         return Promise.resolve({
             token: this.jwtService.sign(jwtPayload),

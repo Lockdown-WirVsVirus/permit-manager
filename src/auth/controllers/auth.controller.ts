@@ -13,16 +13,18 @@ export class AuthController {
     @UseGuards(LocalAuthGuard)
     @Post("login")
     async login(@Request() req: ExpressRequest): Promise<IJwtResponse> {
-        this.logger.debug('login attempt', JSON.stringify(req.user));
-        // const roles = (req.user as any).roles;
-        return this.authService.generateToken();
+        this.logger.debug('login succeeded', JSON.stringify(req.user));
+        const roles = (req.user as any).roles;
+        return this.authService.generateToken(roles);
     }
 
     @UseGuards(JwtGuard)
     @Get("verify")
-    verify() {
+    verify(@Request() req: ExpressRequest) {
+        const roles = (req.user as any).roles;
         return {
             authed: true,
+            roles,
         }
     }
 }
