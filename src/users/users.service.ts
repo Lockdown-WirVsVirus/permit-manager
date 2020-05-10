@@ -12,13 +12,13 @@ export interface User {
 @Injectable()
 export class UsersService {
     private users: User[];
-    private pathToUsersJson = process.env.PATH_USERS_JSON || "authorizedUsers.json"
+    private pathToUsersJson = process.env.PATH_USERS_JSON || 'authorizedUsers.json';
 
     constructor() {
         this.reload().catch(err => {
-            console.error("could not inizialize authorized users from " + this.pathToUsersJson, err);
+            console.error('could not inizialize authorized users from ' + this.pathToUsersJson, err);
             process.exit(1);
-        })
+        });
     }
 
     reload() {
@@ -30,8 +30,8 @@ export class UsersService {
                     this.users = json;
                     return resolve();
                 }
-            })
-        })
+            });
+        });
     }
 
     async findOne(username: string): Promise<User | undefined> {

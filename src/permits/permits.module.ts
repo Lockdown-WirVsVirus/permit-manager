@@ -5,15 +5,7 @@ import { AuthService } from './../auth/auth.service';
 import { UsersService } from './../users/users.service';
 
 @Module({
-    controllers: [
-        PermitController,
-    ],
-    providers: [
-        AuthService,
-        UsersService,
-        PermitService,
-    ]
+    controllers: [PermitController],
+    providers: [AuthService, UsersService, PermitService],
 })
-export class PermitsModule {
-
-}
+export class PermitsModule {}

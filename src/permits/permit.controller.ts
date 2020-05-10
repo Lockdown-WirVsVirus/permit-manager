@@ -5,7 +5,6 @@ import { JwtGuard } from '../auth/jwt.guard';
 
 @Controller('permits')
 export class PermitController {
-
     constructor(private readonly permitService: PermitService) {}
 
     @UseGuards(JwtGuard)

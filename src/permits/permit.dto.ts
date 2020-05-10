@@ -1,4 +1,4 @@
-import { Reason, PermitCode } from "./permit.service";
+import { Reason, PermitCode } from './permit.service';
 
 export class PermitRequest {
     reason: Reason;

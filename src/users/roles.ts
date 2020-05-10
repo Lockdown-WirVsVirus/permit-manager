@@ -1,1 +1,1 @@
-export type UserRoles = "TOURISTIC" | "RESIDENCE";
+export type UserRoles = 'TOURISTIC' | 'RESIDENCE';

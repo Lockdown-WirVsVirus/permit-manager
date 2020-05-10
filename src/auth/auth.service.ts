@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
-import { createHash } from "crypto"
+import { createHash } from 'crypto';
 
 export interface IJwtResponse {
     token: string;
@@ -17,7 +17,9 @@ export class AuthService {
 
     // TODO: use bcrypt
     public hash(str: string) {
-        return createHash("sha256").update(str).digest("hex");
+        return createHash('sha256')
+            .update(str)
+            .digest('hex');
     }
 
     async validateUser(username: string, pass: string): Promise<any> {

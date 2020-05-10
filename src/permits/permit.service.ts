@@ -5,11 +5,10 @@ export interface PermitCode {
     reasonAbbrevation: string;
 }
 
-export type Reason = "TO-TOURISTIC" | "SA-SBFANLIEGER" | "RE-RESIDENCE";
+export type Reason = 'TO-TOURISTIC' | 'SA-SBFANLIEGER' | 'RE-RESIDENCE';
 
 @Injectable()
 export class PermitService {
-
     /**
      * generates a permit. Basically a unique code assigned to a reason.
      * @param reason reason of code usage
@@ -33,7 +32,7 @@ export class PermitService {
      * should generate a 6-digit unique code
      */
     private generateCode(): string {
-        let code = "";
+        let code = '';
         let sum = 0;
         for (let i = 0; i < 5; i++) {
             // 0-9
@@ -44,8 +43,8 @@ export class PermitService {
         }
 
         // add modulo 10
-        code += (sum % 10);
+        code += sum % 10;
 
         return code;
-    };
+    }
 }

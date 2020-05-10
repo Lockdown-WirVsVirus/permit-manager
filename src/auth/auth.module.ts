@@ -16,18 +16,10 @@ import { AuthController } from './controllers/auth.controller';
             }),
         }),
         UsersModule,
-        PassportModule
+        PassportModule,
     ],
-    controllers: [
-        AuthController
-    ],
-    providers: [
-        AuthService,
-        LocalStrategy
-    ],
-    exports: [
-        AuthService,
-        JwtModule,
-    ]
+    controllers: [AuthController],
+    providers: [AuthService, LocalStrategy],
+    exports: [AuthService, JwtModule],
 })
 export class AuthModule {}
