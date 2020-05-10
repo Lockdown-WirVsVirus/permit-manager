@@ -1,4 +1,7 @@
 import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { PermitModel } from './permits.schema';
+import { Model } from 'mongoose';
 
 export interface PermitCode {
     code: string;
@@ -9,6 +12,7 @@ export type Reason = 'TO-TOURISTIC' | 'SA-SBFANLIEGER' | 'RE-RESIDENCE';
 
 @Injectable()
 export class PermitService {
+    constructor(@InjectModel('Permit') private permitModel: Model<PermitModel>) {}
     /**
      * generates a permit. Basically a unique code assigned to a reason.
      * @param reason reason of code usage

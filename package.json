@@ -29,6 +29,8 @@
     "@nestjs/passport": "^7.0.0",
     "@nestjs/platform-express": "^7.0.0",
     "jsonfile": "^6.0.1",
+    "mongodb-memory-server": "^6.5.2",
+    "mongoose": "^5.9.13",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
