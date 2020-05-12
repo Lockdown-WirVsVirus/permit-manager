@@ -7,7 +7,6 @@ import { JwtGuard } from '../auth/jwt.guard';
 export class PermitController {
     constructor(private readonly permitService: PermitService) {}
 
-    @UseGuards(JwtGuard)
     @Post()
     @HttpCode(201)
     async createPermit(@Body() body: PermitRequest): Promise<PermitResponse> {

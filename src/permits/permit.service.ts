@@ -17,11 +17,20 @@ export class PermitService {
      * generates a permit. Basically a unique code assigned to a reason.
      * @param reason reason of code usage
      */
-    createPermit(reason: Reason): Promise<PermitCode> {
-        return Promise.resolve({
-            reasonAbbrevation: this.mapToReasonAbbreviaton(reason),
-            code: this.generateCode(),
-        });
+    async createPermit(reason: Reason): Promise<PermitCode> {
+        let n = 1;
+        let permit: PermitCode;
+        while (n > 1) {
+            permit = {
+                reasonAbbrevation: this.mapToReasonAbbreviaton(reason),
+                code: this.generateCode(),
+            };
+
+            n = await this.permitModel.find(permit).count();
+        }
+        let permitDocument = new this.permitModel(permit);
+
+        return permitDocument;
     }
 
     /**

@@ -1,8 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
-import * as request from 'supertest';
 import { MongoMemoryServer } from 'mongodb-memory-server';
-import { AppModule } from './../src/app.module';
 import { MongooseModule } from '@nestjs/mongoose';
 
 describe('AppController (e2e)', () => {
@@ -15,7 +13,7 @@ describe('AppController (e2e)', () => {
         mongoDB = new MongoMemoryServer();
         const uri = await mongoDB.getUri();
         const moduleFixture: TestingModule = await Test.createTestingModule({
-            imports: [ MongooseModule.forRoot(uri),],
+            imports: [ MongooseModule.forRoot(uri)]
         }).compile();
         
 

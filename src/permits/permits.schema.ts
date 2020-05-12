@@ -1,7 +1,7 @@
 import { PermitCode } from './permit.service';
 import * as mongoose from 'mongoose';
 
-export const PERMIT_MODEL_NAME = 'Tickets';
+export const PERMIT_MODEL_NAME = 'Permit';
 
 export interface PermitModel extends PermitCode, mongoose.Document {}
 
