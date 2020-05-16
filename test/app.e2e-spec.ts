@@ -1,14 +1,17 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
+import { INestApplication, CanActivate, ValidationPipe } from '@nestjs/common';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { MongooseModule } from '@nestjs/mongoose';
 import { PermitsModule } from './../src/permits/permits.module';
 import * as request from 'supertest';
 import { ConfigModule } from '@nestjs/config';
+import { JwtGuard } from './../src/auth/jwt.guard';
 
 describe('AppController (e2e)', () => {
     let app: INestApplication;
     let mongoDB: MongoMemoryServer;
+
+    const fakeGuard: CanActivate = { canActivate: () => true };
 
     const timeout: number = 120_000;
 
@@ -19,10 +22,10 @@ describe('AppController (e2e)', () => {
             imports: [ MongooseModule.forRoot(uri), PermitsModule,  ConfigModule.forRoot({
                 envFilePath: ['test/.env.e2e'],
             }),]
-        }).compile();
+        }).overrideGuard(JwtGuard).useValue(fakeGuard).compile();
         
-        console.debug(process.env.JWT_SECRET)
         app = moduleFixture.createNestApplication();
+        app.useGlobalPipes(new ValidationPipe());
         await app.init();
     });
 
@@ -47,21 +50,10 @@ describe('AppController (e2e)', () => {
             return await request(app.getHttpServer())
                 .post('/permits')
                 .send()
-                .expect(401);
+                .expect(201).then(async (res)=>{
+                    console.debug(res.body)
+                })
         },
         timeout,
     );
-
-    it(
-        'Cant create permit, because auth wrong',
-        async () => {
-            return await request(app.getHttpServer())
-                .post('/permits')
-                .auth("test", {type: "bearer"})
-                .send()
-                .expect(403);
-        },
-        timeout,
-    );
-
 });
