@@ -20,7 +20,7 @@ export class PermitService {
     async createPermit(reason: Reason): Promise<PermitCode> {
         let n = 1;
         let permit: PermitCode;
-        while (n > 1) {
+        while (n > 0) {
             permit = {
                 reasonAbbrevation: this.mapToReasonAbbreviaton(reason),
                 code: this.generateCode(),
@@ -29,6 +29,16 @@ export class PermitService {
             n = await this.permitModel.find(permit).count();
         }
         let permitDocument = new this.permitModel(permit);
+
+        return permitDocument;
+    }
+
+    async createNumbersOfPermit(reason: Reason, numberOfTickes: number): Promise<PermitCode[]> {
+        let permitDocument: PermitCode[] = [];
+
+        while (numberOfTickes != permitDocument.length) {
+            permitDocument.push(await this.createPermit(reason));
+        }
 
         return permitDocument;
     }
@@ -45,16 +55,13 @@ export class PermitService {
      * should generate a 6-digit unique code
      */
     private generateCode(): string {
-        let code = '';
-        let sum = 0;
-        for (let i = 0; i < 5; i++) {
-            // 0-9
-            const randomNumberDigit = Math.floor(Math.random() * 9);
-
-            code += randomNumberDigit;
-            sum += randomNumberDigit;
-        }
-
+        let code = Math.random()
+            .toString()
+            .substr(2, 5);
+        let sum = code
+            .split('')
+            .map(x => parseInt(x))
+            .reduce((x, y) => x + y);
         // add modulo 10
         code += sum % 10;
 

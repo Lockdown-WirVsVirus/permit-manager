@@ -9,7 +9,7 @@ import { UsersModule } from './../users/users.module';
 import { AuthModule } from './../auth/auth.module';
 
 @Module({
-    imports: [MongooseModule.forFeature([{ name: PERMIT_MODEL_NAME, schema: permitSchema }]),  UsersModule, AuthModule],
+    imports: [MongooseModule.forFeature([{ name: PERMIT_MODEL_NAME, schema: permitSchema }]), UsersModule, AuthModule],
     controllers: [PermitController],
     providers: [AuthService, UsersService, PermitService],
 })

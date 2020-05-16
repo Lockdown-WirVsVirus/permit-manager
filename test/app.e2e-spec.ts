@@ -6,6 +6,7 @@ import { PermitsModule } from './../src/permits/permits.module';
 import * as request from 'supertest';
 import { ConfigModule } from '@nestjs/config';
 import { JwtGuard } from './../src/auth/jwt.guard';
+import { Reason } from 'src/permits/permit.service';
 
 describe('AppController (e2e)', () => {
     let app: INestApplication;
@@ -14,18 +15,25 @@ describe('AppController (e2e)', () => {
     const fakeGuard: CanActivate = { canActivate: () => true };
 
     const timeout: number = 120_000;
+    const testReson: Reason = 'TO-TOURISTIC';
 
     beforeEach(async () => {
         mongoDB = new MongoMemoryServer();
         const uri = await mongoDB.getUri();
         const moduleFixture: TestingModule = await Test.createTestingModule({
-            imports: [ MongooseModule.forRoot(uri), PermitsModule,  ConfigModule.forRoot({
-                envFilePath: ['test/.env.e2e'],
-            }),]
-        }).overrideGuard(JwtGuard).useValue(fakeGuard).compile();
-        
+            imports: [
+                MongooseModule.forRoot(uri),
+                PermitsModule,
+                ConfigModule.forRoot({
+                    envFilePath: ['test/.env.e2e'],
+                }),
+            ],
+        })
+            .overrideGuard(JwtGuard)
+            .useValue(fakeGuard)
+            .compile();
+
         app = moduleFixture.createNestApplication();
-        app.useGlobalPipes(new ValidationPipe());
         await app.init();
     });
 
@@ -36,7 +44,7 @@ describe('AppController (e2e)', () => {
 
     // At the end: close app
     afterAll(async () => {
-        await mongoDB.stop()
+        await mongoDB.stop();
         await app.close();
     }, timeout);
 
@@ -45,14 +53,35 @@ describe('AppController (e2e)', () => {
     });
 
     it(
-        'Cant create permit, because auth missing',
+        'Create Permits',
         async () => {
             return await request(app.getHttpServer())
                 .post('/permits')
-                .send()
-                .expect(201).then(async (res)=>{
-                    console.debug(res.body)
-                })
+                .send({ reason: testReson })
+                .expect(201)
+                .then(async res => {
+                    expect(res.body.code).toHaveLength(6);
+                    expect(res.body.reasonAbbrevation).toBe('TO');
+                });
+        },
+        timeout,
+    );
+
+    it(
+        'Create 2 Permits',
+        async () => {
+            return await request(app.getHttpServer())
+                .post('/permits/numberOfPermits/2')
+                .send({ reason: testReson })
+                .expect(201)
+                .then(async res => {
+                    expect(res.body).toHaveLength(2);
+                    expect(res.body[0].code).toHaveLength(6);
+                    expect(res.body[1].code).toHaveLength(6);
+                    expect(res.body[0].reasonAbbrevation).toBe('TO');
+                    expect(res.body[1].reasonAbbrevation).toBe('TO');
+                    expect(res.body[0].code != res.body[1].code).toBe(true);
+                });
         },
         timeout,
     );

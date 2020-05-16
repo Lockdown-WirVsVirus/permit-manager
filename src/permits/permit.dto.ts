@@ -1,5 +1,5 @@
 import { Reason, PermitCode } from './permit.service';
-import {IsNotEmpty } from 'class-validator';
+import { IsNotEmpty } from 'class-validator';
 
 export class PermitRequest {
     @IsNotEmpty()
