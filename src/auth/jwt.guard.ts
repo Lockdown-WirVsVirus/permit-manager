@@ -34,6 +34,7 @@ export class JwtGuard implements CanActivate {
                 );
                 return false;
             });
+        
 
         // Note that behind the scenes, when a guard returns false, the framework throws a ForbiddenException.
         // If you want to return a different error response, you should throw your own specific exception.

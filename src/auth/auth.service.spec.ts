@@ -13,6 +13,7 @@ describe('AuthService', () => {
     let mockUsersService = {
         findOne: (username): Promise<User> => {
             return Promise.resolve({
+                roles: 'TOURISTIC',
                 userId: '0',
                 username: 'test',
                 hashedPassword: '25bf8e1a2393f1108d37029b3df5593236c755742ec93465bbafa9b290bddcf6',

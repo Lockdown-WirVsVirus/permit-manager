@@ -9,6 +9,7 @@ export class PermitController {
 
     @Post()
     @HttpCode(201)
+    @UseGuards(JwtGuard)
     async createPermit(@Body() body: PermitRequest): Promise<PermitResponse> {
         return this.permitService.createPermit(body.reason);
     }
