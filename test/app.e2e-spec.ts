@@ -34,6 +34,8 @@ describe('AppController (e2e)', () => {
             .compile();
 
         app = moduleFixture.createNestApplication();
+
+        app.useGlobalPipes(new ValidationPipe());
         await app.init();
     });
 
@@ -82,6 +84,32 @@ describe('AppController (e2e)', () => {
                     expect(res.body[1].reasonAbbrevation).toBe('TO');
                     expect(res.body[0].code != res.body[1].code).toBe(true);
                 });
+        },
+        timeout,
+    );
+
+
+
+    it(
+        'Cant create 2 Permits, because reason  are missing',
+        async () => {
+            return await request(app.getHttpServer())
+                .post('/permits/numberOfPermits/2')
+                .send({ reason: null })
+                .expect(400)
+                
+        },
+        timeout,
+    );
+
+    it(
+        'Cant create Permit, because reason  are missing',
+        async () => {
+            return await request(app.getHttpServer())
+                .post('/permits')
+                .send({ reason: null })
+                .expect(400)
+                
         },
         timeout,
     );

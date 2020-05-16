@@ -34,6 +34,7 @@ export class PermitService {
     }
 
     async createNumbersOfPermit(reason: Reason, numberOfTickes: number): Promise<PermitCode[]> {
+        console.debug(numberOfTickes)
         let permitDocument: PermitCode[] = [];
 
         while (numberOfTickes != permitDocument.length) {

@@ -28,6 +28,7 @@
     "@nestjs/mongoose": "^7.0.0",
     "@nestjs/passport": "^7.0.0",
     "@nestjs/platform-express": "^7.0.0",
+    "class-transformer": "^0.2.3",
     "class-validator": "^0.12.2",
     "jsonfile": "^6.0.1",
     "mongodb-memory-server": "^6.5.2",
