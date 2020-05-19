@@ -46,7 +46,6 @@ describe('AppController (e2e)', () => {
 
     // At the end: close app
     afterAll(async () => {
-        await mongoDB.stop();
         await app.close();
     }, timeout);
 
