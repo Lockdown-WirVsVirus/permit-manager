@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { PermitModel } from './permits.schema';
+import { PermitModel, PERMIT_MODEL_NAME } from './permits.schema';
 import { Model } from 'mongoose';
 
 export interface PermitCode {
@@ -12,7 +12,7 @@ export type Reason = 'TO-TOURISTIC' | 'SA-SBFANLIEGER' | 'RE-RESIDENCE';
 
 @Injectable()
 export class PermitService {
-    constructor(@InjectModel('Permit') private permitModel: Model<PermitModel>) {}
+    constructor(@InjectModel(PERMIT_MODEL_NAME) private permitModel: Model<PermitModel>) {}
     /**
      * generates a permit. Basically a unique code assigned to a reason.
      * @param reason reason of code usage
@@ -26,7 +26,7 @@ export class PermitService {
                 code: this.generateCode(),
             };
 
-            n = await this.permitModel.find(permit).count();
+            n = await this.permitModel.find({"code": permit.code}).count();
         }
         let permitDocument = new this.permitModel(permit);
 
@@ -37,7 +37,7 @@ export class PermitService {
         console.debug(numberOfTickes)
         let permitDocument: PermitCode[] = [];
 
-        while (numberOfTickes != permitDocument.length) {
+       for (let i = 1; i <= numberOfTickes; i++) {
             permitDocument.push(await this.createPermit(reason));
         }
 

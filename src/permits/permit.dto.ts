@@ -7,7 +7,7 @@ export class PermitRequest {
     reason: Reason;
 }
 
-export class NumberOfRequestPARAM{
+export class NumberOfRequestParam{
     @IsNotEmpty()
     numberOfPermits: number;
 }

@@ -1,5 +1,5 @@
 import { Controller, Post, Body, UseGuards, HttpCode, Param } from '@nestjs/common';
-import { PermitRequest, PermitResponse, NumberOfRequestPARAM } from './permit.dto';
+import { PermitRequest, PermitResponse, NumberOfRequestParam } from './permit.dto';
 import { PermitService } from './permit.service';
 import { JwtGuard } from '../auth/jwt.guard';
 
@@ -17,7 +17,7 @@ export class PermitController {
     @Post('/numberOfPermits/:numberOfPermits')
     @HttpCode(201)
     @UseGuards(JwtGuard)
-    async createNumberOfPermit(@Body() body: PermitRequest, @Param() numberOfPermits: NumberOfRequestPARAM): Promise<PermitResponse[]> {
+    async createNumberOfPermit(@Body() body: PermitRequest, @Param() numberOfPermits: NumberOfRequestParam): Promise<PermitResponse[]> {
         return this.permitService.createNumbersOfPermit(body.reason, numberOfPermits.numberOfPermits);
     }
 }
