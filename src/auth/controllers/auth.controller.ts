@@ -3,6 +3,7 @@ import { Request as ExpressRequest } from 'express';
 import { LocalAuthGuard } from '../local-auth-guard';
 import { AuthService, IJwtResponse } from '../auth.service';
 import { JwtGuard } from '../jwt.guard';
+import { User } from '../../users/users.service';
 
 @Controller('auth')
 export class AuthController {
@@ -13,9 +14,11 @@ export class AuthController {
     @UseGuards(LocalAuthGuard)
     @Post('login')
     async login(@Request() req: ExpressRequest): Promise<IJwtResponse> {
+        const user: User = req.user as User;
         this.logger.debug('login succeeded', JSON.stringify(req.user));
-        const roles = (req.user as any).roles;
-        return this.authService.generateToken(roles);
+        const username = user.username;
+        const roles = user.roles;
+        return this.authService.generateToken(username, roles);
     }
 
     @UseGuards(JwtGuard)

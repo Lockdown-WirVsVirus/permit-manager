@@ -5,14 +5,17 @@ import { UserRoles } from './roles';
 export interface User {
     userId: string;
     username: string;
+    roles: UserRoles[];
+}
+
+export interface LocalUser extends User {
     hashedPassword: string;
-    roles: UserRoles;
 }
 
 @Injectable()
 export class UsersService {
-    private users: User[];
-    private pathToUsersJson = process.env.PATH_USERS_JSON || 'authorizedUsers.json';
+    private users: LocalUser[];
+    private pathToUsersJson = process.env.PATH_USERS_JSON || "authorizedUsers.json"
 
     constructor() {
         this.reload().catch(err => {
@@ -34,7 +37,7 @@ export class UsersService {
         });
     }
 
-    async findOne(username: string): Promise<User | undefined> {
+    async findOne(username: string): Promise<LocalUser | undefined> {
         return this.users.find(user => user.username === username);
     }
 }

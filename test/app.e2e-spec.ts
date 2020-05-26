@@ -96,7 +96,7 @@ describe('AppController (e2e)', () => {
                 .post('/permits/numberOfPermits/2')
                 .send({ reason: null })
                 .expect(400)
-                
+
         },
         timeout,
     );
@@ -108,7 +108,7 @@ describe('AppController (e2e)', () => {
                 .post('/permits')
                 .send({ reason: null })
                 .expect(400)
-                
+
         },
         timeout,
     );
