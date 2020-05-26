@@ -2,7 +2,7 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [ master, develop ]
 
 jobs:
   docker-build-and-push:
@@ -27,14 +27,31 @@ jobs:
     # Build the Docker image
     - name: Build
       run: |
-        docker build . --tag eu.gcr.io/${{ secrets.GCLOUD_PROJECT }}/${{ secrets.GCLOUD_APP_NAME }}:master
+        docker build . \
+        --tag eu.gcr.io/${{ secrets.GCLOUD_PROJECT }}/${{ secrets.GCLOUD_APP_NAME }}:${GITHUB_SHA} \
+        --tag eu.gcr.io/${{ secrets.GCLOUD_PROJECT }}/${{ secrets.GCLOUD_APP_NAME }}:${GITHUB_REF#refs/heads/}
     # Push the Docker image to Google Container Registry
+    # by pushing the registry without tag we push all available tags
     - name: Publish
+      run: docker push eu.gcr.io/${{ secrets.GCLOUD_PROJECT }}/${{ secrets.GCLOUD_APP_NAME }}
+
+    # get cloud run name by branch
+    - name: Set env to dev
+      if: endsWith(github.ref, '/develop')
       run: |
-        docker push eu.gcr.io/${{ secrets.GCLOUD_PROJECT }}/${{ secrets.GCLOUD_APP_NAME }}:master
+        echo "::set-env name=CLOUD_RUN_NAME::dev-${{ secrets.GCLOUD_APP_NAME }}"
+    - name: Set env to production
+      if: endsWith(github.ref, '/master')
+      run: |
+        echo "::set-env name=CLOUD_RUN_NAME::${{ secrets.GCLOUD_APP_NAME }}"
 
-    # Deploy the Docker image to the GKE cluster
-    # - name: Deploy
-    #   run: |
-    #     gcloud components install beta && gcloud beta run deploy ${{ secrets.GCLOUD_APP_NAME }} --quiet --image eu.gcr.io/${{ secrets.GCLOUD_PROJECT }}/${{ secrets.GCLOUD_APP_NAME }} --project ${{ secrets.GCLOUD_PROJECT }} --region europe-west1 --platform managed
-
+    # Deploy image to Cloud Run
+    - name: Deploy
+      run: |-
+        echo "deploy to cloud run $CLOUD_RUN_NAME" && \
+        gcloud run deploy "$CLOUD_RUN_NAME" \
+          --quiet \
+          --region "europe-west1" \
+          --image eu.gcr.io/${{ secrets.GCLOUD_PROJECT }}/${{ secrets.GCLOUD_APP_NAME }}:${GITHUB_SHA} \
+          --platform "managed" \
+          --allow-unauthenticated
