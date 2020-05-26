@@ -15,7 +15,7 @@ jobs:
     # Setup gcloud CLI
     - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
       with:
-        version: '270.0.0'
+        version: '290.0.1'
         service_account_key: ${{ secrets.GCLOUD_GCR_SERVICE_KEY }}
 
     # Configure docker to use the gcloud command-line tool as a credential helper
