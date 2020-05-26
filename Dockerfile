@@ -1,22 +1,38 @@
-# Use the official lightweight Node.js 12 image.
-# https://hub.docker.com/_/node
-FROM node:12-slim
+FROM node:12-alpine as base
 
-# Create and change to the app directory.
-WORKDIR /usr/src/app
+# =====================
+FROM base as builder
 
-# Copy application dependency manifests to the container image.
-# A wildcard is used to ensure both package.json AND package-lock.json are copied.
-# Copying this separately prevents re-running npm install on every code change.
+# node-gyp needs python
+RUN apk add --no-cache --virtual .gyp python make g++
+
+WORKDIR /app/
+
+# copy 1st only dependency manifests
 COPY package*.json ./
 
 # install exact
 RUN npm ci
 
-# Copy local code to the container image.
-COPY . ./
+# copy 2nd source
+COPY . .
 
+# build dist
 RUN npm run build
 
-# Run the web service on container startup.
-CMD [ "npm", "start:prod" ]
+# =====================
+FROM base as app
+
+# run as non-root user
+USER node:node
+WORKDIR /home/node/app
+
+# Copy stuff from builder with non-root
+COPY --from=builder --chown=node:node /app/node_modules node_modules
+COPY --from=builder --chown=node:node /app/dist dist
+COPY --from=builder --chown=node:node /app/package*.json ./
+
+ENV PORT 3010
+EXPOSE 3010
+
+CMD ["npm", "run", "start:prod"]
