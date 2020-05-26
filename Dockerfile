@@ -20,6 +20,9 @@ COPY . .
 # build dist
 RUN npm run build
 
+# default empty authorizedUsers.json
+RUN echo "{}" > authorizedUsers.json
+
 # =====================
 FROM base as app
 
@@ -31,6 +34,7 @@ WORKDIR /home/node/app
 COPY --from=builder --chown=node:node /app/node_modules node_modules
 COPY --from=builder --chown=node:node /app/dist dist
 COPY --from=builder --chown=node:node /app/package*.json ./
+COPY --from=builder --chown=node:node /app/authorizedUsers.json ./
 
 ENV PORT 3010
 EXPOSE 3010
