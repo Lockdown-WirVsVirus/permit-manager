@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { UsersService } from '../users/users.service';
+import { UsersService, User } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { createHash } from "crypto"
-import { UserRoles } from 'src/users/roles';
+import { UserRoles } from '../users/roles';
 
 export interface IJwtResponse {
     token: string;
@@ -22,7 +22,7 @@ export class AuthService {
         return createHash("sha256").update(str).digest("hex");
     }
 
-    async validateUser(username: string, pass: string): Promise<any> {
+    async validateUser(username: string, pass: string): Promise<User> {
         const hashedPassword = this.hash(pass);
         const user = await this.usersService.findOne(username);
         if (user && user.hashedPassword === hashedPassword) {
