@@ -2,13 +2,15 @@ import { Injectable } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { createHash } from "crypto"
+import { UserRoles } from 'src/users/roles';
 
 export interface IJwtResponse {
     token: string;
 }
 
 export interface IJwtTokenPayload {
-    roles?: string[];
+    sub: string;
+    roles: UserRoles[];
 }
 
 @Injectable()
@@ -30,8 +32,9 @@ export class AuthService {
         return null;
     }
 
-    async generateToken(roles: string[]): Promise<IJwtResponse> {
+    async generateToken(username: string, roles: UserRoles[]): Promise<IJwtResponse> {
         const jwtPayload: IJwtTokenPayload = {
+            sub: username,
             roles,
         };
         return Promise.resolve({

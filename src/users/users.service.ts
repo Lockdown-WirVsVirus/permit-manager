@@ -6,7 +6,7 @@ export interface User {
     userId: string;
     username: string;
     hashedPassword: string;
-    roles: UserRoles;
+    roles: UserRoles[];
 }
 
 @Injectable()
