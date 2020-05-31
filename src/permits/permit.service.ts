@@ -1,24 +1,47 @@
 import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { PermitModel, PERMIT_MODEL_NAME } from './permits.schema';
+import { Model } from 'mongoose';
 
 export interface PermitCode {
     code: string;
     reasonAbbrevation: string;
 }
 
-export type Reason = "TO-TOURISTIC" | "SA-SBFANLIEGER" | "RE-RESIDENCE";
+export type Reason = 'TO-TOURISTIC' | 'SA-SBFANLIEGER' | 'RE-RESIDENCE';
 
 @Injectable()
 export class PermitService {
-
+    constructor(@InjectModel(PERMIT_MODEL_NAME) private permitModel: Model<PermitModel>) {}
     /**
      * generates a permit. Basically a unique code assigned to a reason.
      * @param reason reason of code usage
      */
-    createPermit(reason: Reason): Promise<PermitCode> {
-        return Promise.resolve({
-            reasonAbbrevation: this.mapToReasonAbbreviaton(reason),
-            code: this.generateCode(),
-        });
+    async createPermit(reason: Reason): Promise<PermitCode> {
+        let n = 1;
+        let permit: PermitCode;
+        while (n > 0) {
+            permit = {
+                reasonAbbrevation: this.mapToReasonAbbreviaton(reason),
+                code: this.generateCode(),
+            };
+
+            n = await this.permitModel.find({"code": permit.code}).count();
+        }
+        let permitDocument = new this.permitModel(permit);
+
+        return permitDocument;
+    }
+
+    async createNumbersOfPermit(reason: Reason, numberOfTickes: number): Promise<PermitCode[]> {
+        console.debug(numberOfTickes)
+        let permitDocument: PermitCode[] = [];
+
+       for (let i = 1; i <= numberOfTickes; i++) {
+            permitDocument.push(await this.createPermit(reason));
+        }
+
+        return permitDocument;
     }
 
     /**
@@ -33,19 +56,16 @@ export class PermitService {
      * should generate a 6-digit unique code
      */
     private generateCode(): string {
-        let code = "";
-        let sum = 0;
-        for (let i = 0; i < 5; i++) {
-            // 0-9
-            const randomNumberDigit = Math.floor(Math.random() * 9);
-
-            code += randomNumberDigit;
-            sum += randomNumberDigit;
-        }
-
+        let code = Math.random()
+            .toString()
+            .substr(2, 5);
+        let sum = code
+            .split('')
+            .map(x => parseInt(x))
+            .reduce((x, y) => x + y);
         // add modulo 10
-        code += (sum % 10);
+        code += sum % 10;
 
         return code;
-    };
+    }
 }

@@ -5,14 +5,14 @@ import { AuthService, IJwtResponse } from '../auth.service';
 import { JwtGuard } from '../jwt.guard';
 import { User } from '../../users/users.service';
 
-@Controller("auth")
+@Controller('auth')
 export class AuthController {
     private readonly logger = new Logger(AuthController.name);
 
     constructor(private readonly authService: AuthService) {}
 
     @UseGuards(LocalAuthGuard)
-    @Post("login")
+    @Post('login')
     async login(@Request() req: ExpressRequest): Promise<IJwtResponse> {
         const user: User = req.user as User;
         this.logger.debug('login succeeded', JSON.stringify(req.user));
@@ -22,12 +22,12 @@ export class AuthController {
     }
 
     @UseGuards(JwtGuard)
-    @Get("verify")
+    @Get('verify')
     verify(@Request() req: ExpressRequest) {
         const roles = (req.user as any).roles;
         return {
             authed: true,
             roles,
-        }
+        };
     }
 }

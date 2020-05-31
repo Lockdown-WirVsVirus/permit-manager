@@ -19,7 +19,9 @@ export class AuthService {
 
     // TODO: use bcrypt
     public hash(str: string) {
-        return createHash("sha256").update(str).digest("hex");
+        return createHash('sha256')
+            .update(str)
+            .digest('hex');
     }
 
     async validateUser(username: string, pass: string): Promise<User> {
